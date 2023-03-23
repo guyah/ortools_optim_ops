@@ -2,7 +2,7 @@
 """Build an OR model."""
 import os
 
-from ortools.linear_solver import pywraplp
+from ortools.linear_solver import linear_solver_pb2, pywraplp
 
 solver = pywraplp.Solver.CreateSolver("SCIP")
 
@@ -19,7 +19,9 @@ solver.Maximize(3 * x + 2 * z)
 # options = pywraplp.ModelExportOptions()
 str1 = solver.ExportModelAsLpFormat(False)
 str2 = solver.ExportModelAsMpsFormat(True, False)
-
+model = linear_solver_pb2.MPModelProto()
+solver.ExportModelToProto(model)
+print(model)
 # set the directory path
 directory = "models_mps"
 
@@ -28,10 +30,10 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 # specify the file path within the directory
-model_file = os.path.join(directory, "test_or.mps")
+model_file = os.path.join(directory, "test_or.proto")
 
-with open(model_file, "w") as f_:
-    f_.write(str2)
+with open(model_file, "wb") as f_:
+    f_.write(model.SerializeToString())
 
 status = solver.Solve()
 
