@@ -1,29 +1,51 @@
 # -*- coding: utf-8 -*-
 """Read an OR model."""
+from google.protobuf import text_format
 from ortools.linear_solver import linear_solver_pb2, pywraplp
 
 solver = pywraplp.Solver.CreateSolver("SCIP")
 
 # Read the model from file
-model_file = "models_mps/test_or.proto"
+model_file = "models/test_or_proto.txt"
 
-# Load the model into the solver
 with open(model_file, "rb") as f:
-    proto = f.read()
-    model = linear_solver_pb2.MPModelProto()
 
-    model.FromString(proto)
+    ##########################
+    ##########################
+    # SECTION - Read Old Model
+    ##########################
+    ##########################
 
-    solver.LoadModelFromProto(model)
+    # read the model proto in txt
+    model_proto_txt = f.read()
 
+    # Generate the model placeholder
+    old_model_proto = linear_solver_pb2.MPModelProto()
+    text_format.Merge(model_proto_txt, old_model_proto)
+
+    # Load the model from the proto
+    # model now lives in the solver (changes only appear in the solver)
+    # if we need to access the model we need to export it again
+    # No changes will be written to old_proto_model
+    errors = solver.LoadModelFromProto(old_model_proto)
+
+    #####################################################
+    #####################################################
+    # SECTION - Adding variables and constraints to model
+    #####################################################
+    #####################################################
+
+    # Define infinity
     infinity = solver.infinity()
 
-    x = solver.IntVar(0.0, infinity, "x")
-    z = solver.NumVar(0.0, infinity, "z")
+    # x and y are integer non-negative variables.
+    a = solver.IntVar(0.0, infinity, "a")
+    b = solver.NumVar(0.0, infinity, "b")
 
-    solver.Maximize(3 * x + 2 * z)
-    status = solver.Solve()
+    c3 = solver.Add(a - b <= 10)
+    c4 = solver.Add(b + a >= 9)
 
-    if status == pywraplp.Solver.OPTIMAL:
-        print("\n\nSolution:")
-        print("Objective value =", solver.Objective().Value())
+    # The new model will hold old and new variables and constraints
+    new_model = linear_solver_pb2.MPModelProto()
+    solver.ExportModelToProto(new_model)
+    print(new_model)

@@ -1,1 +1,2 @@
 ortools==9.6.*
+types-protobuf==4.22.*
