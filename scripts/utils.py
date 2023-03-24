@@ -11,7 +11,7 @@ def export_model_from_solver(solver, output_model_name):
     Args:
         solver: The linear solver instance.
         output_model_name: The name of the output model file.
-    
+
     Returns:
         None
     """
