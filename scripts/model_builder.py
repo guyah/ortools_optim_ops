@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Build an OR model."""
-import os
 
-from ortools.linear_solver import linear_solver_pb2, pywraplp
+from ortools.linear_solver import pywraplp
+from utils import export_model_from_solver
 
 solver = pywraplp.Solver.CreateSolver("SCIP")
 
@@ -16,20 +16,5 @@ z = solver.NumVar(0.0, infinity, "z")
 c1 = solver.Add(x - z <= 5)
 c2 = solver.Add(x + z <= 9)
 
-# Prepare model to export using protobuf
-model = linear_solver_pb2.MPModelProto()
-solver.ExportModelToProto(model)
-
-
-# set the directory path
-directory = "models"
-
-# create the directory if it doesn't exist
-if not os.path.exists(directory):
-    os.makedirs(directory)
-
-# specify the file path within the directory
-model_file_text_proto = os.path.join(directory, "test_or_proto.txt")
-
-with open(model_file_text_proto, "w") as f_:
-    f_.write(str(model))
+# Export model
+export_model_from_solver(solver, "test_or_proto.txt")

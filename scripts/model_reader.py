@@ -2,17 +2,18 @@
 """Read an OR model."""
 from google.protobuf import text_format
 from ortools.linear_solver import linear_solver_pb2, pywraplp
+from utils import export_model_from_solver
 
 solver = pywraplp.Solver.CreateSolver("SCIP")
 
 # Read the model from file
 model_file = "models/test_or_proto.txt"
 
-with open(model_file, "rb") as f:
+with open(model_file, "r") as f:
 
     ##########################
     ##########################
-    # SECTION - Read Old Model
+    # SECTION - Read old Model
     ##########################
     ##########################
 
@@ -38,7 +39,7 @@ with open(model_file, "rb") as f:
     # Define infinity
     infinity = solver.infinity()
 
-    # x and y are integer non-negative variables.
+    # a and b are integer non-negative variables.
     a = solver.IntVar(0.0, infinity, "a")
     b = solver.NumVar(0.0, infinity, "b")
 
@@ -49,3 +50,6 @@ with open(model_file, "rb") as f:
     new_model = linear_solver_pb2.MPModelProto()
     solver.ExportModelToProto(new_model)
     print(new_model)
+
+    # Export model
+    export_model_from_solver(solver, "test_or_proto_processed.txt")

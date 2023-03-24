@@ -1,0 +1,67 @@
+variable {
+  lower_bound: 0
+  upper_bound: inf
+  is_integer: true
+  name: "auto_v_000000000"
+}
+variable {
+  lower_bound: 0
+  upper_bound: inf
+  is_integer: false
+  name: "auto_v_000000001"
+}
+variable {
+  lower_bound: 0
+  upper_bound: inf
+  is_integer: true
+  name: "a"
+}
+variable {
+  lower_bound: 0
+  upper_bound: inf
+  is_integer: false
+  name: "b"
+}
+constraint {
+  var_index: 0
+  var_index: 1
+  coefficient: 1
+  coefficient: -1
+  lower_bound: -inf
+  upper_bound: 5
+  name: "auto_c_000000000"
+  is_lazy: false
+}
+constraint {
+  var_index: 0
+  var_index: 1
+  coefficient: 1
+  coefficient: 1
+  lower_bound: -inf
+  upper_bound: 9
+  name: "auto_c_000000001"
+  is_lazy: false
+}
+constraint {
+  var_index: 2
+  var_index: 3
+  coefficient: 1
+  coefficient: -1
+  lower_bound: -inf
+  upper_bound: 10
+  name: "auto_c_000000002"
+  is_lazy: false
+}
+constraint {
+  var_index: 2
+  var_index: 3
+  coefficient: 1
+  coefficient: 1
+  lower_bound: 9
+  upper_bound: inf
+  name: "auto_c_000000003"
+  is_lazy: false
+}
+maximize: false
+objective_offset: 0
+name: ""
